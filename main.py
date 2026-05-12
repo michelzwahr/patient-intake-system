@@ -1,33 +1,19 @@
-from flask import Flask, render_template, request, jsonify
+from app import create_app
+from models import Patient, Document, ContactData, db
 
-app = Flask(__name__)
+app = create_app()
 
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
-@app.route("/")
-def index():
-    return render_template("test_formular.html")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Datenbank mit Flask verbinden
+db.init_app(app)
 
-@app.route("/submit", methods=["POST"])
-def submit():
-    data = request.json
+# Tabellen erzeugen
+with app.app_context():
+    db.create_all()
 
-    fname = data.get("fname")
-    name = data.get("name")
-
-    print("Empfangen:")
-    print("Vorname:", fname)
-    print("Nachname:", name)
-
-    return jsonify({
-        "status": "ok",
-        "received": data
-    })
-
-
-@app.route("/success.html")
-def success():
-    return render_template("success.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

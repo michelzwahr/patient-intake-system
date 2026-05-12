@@ -17,7 +17,7 @@ document.getElementById("testform").addEventListener("submit", function(event) {
     .then(res => res.json())
     .then(data => {
         console.log(data);
-        window.location.href = "/success.html";
+        window.location.href = "/success";
     });
 
 });
