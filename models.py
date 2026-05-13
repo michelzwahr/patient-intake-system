@@ -30,3 +30,5 @@ class Document(db.Model):
     pdf_path = db.Column(db.String(100))
 
     created_at = db.Column(db.Date)
+
+    p_id = db.Column(db.Integer, db.ForeignKey("patient.p_id"))
