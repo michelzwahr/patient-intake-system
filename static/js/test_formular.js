@@ -3,6 +3,11 @@ document.getElementById("testform").addEventListener("submit", function(event) {
 
     const fname = document.getElementById("fname").value;
     const name = document.getElementById("name").value;
+    
+    const selected_radio = document.querySelector('input[name="allergy"]:checked').value;
+    const allergy_details = document.getElementById("allergy_details");
+
+
 
     fetch("/submit", {
         method: "POST",
@@ -11,7 +16,9 @@ document.getElementById("testform").addEventListener("submit", function(event) {
         },
         body: JSON.stringify({
             fname: fname,
-            name: name
+            name: name,
+            allergies: selected_radio,
+            allergy_details: allergy_details.value
         })
     })
     .then(res => res.json())
@@ -21,3 +28,17 @@ document.getElementById("testform").addEventListener("submit", function(event) {
     });
 
 });
+
+
+function allergy_check(){
+    const selected_radio = document.querySelector('input[name="allergy"]:checked').value;
+    const allergy_div = document.getElementById("allergy_div");
+
+    if (selected_radio == "ja"){
+        allergy_div.style = "display: block;"
+    }
+    else{
+        allergy_div.style = "display: none;"
+    }
+    
+}
