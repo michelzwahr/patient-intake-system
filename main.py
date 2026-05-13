@@ -1,7 +1,9 @@
 from app import create_app
 from models import Patient, Document, ContactData, db
+from pdf_handler import PDFHandler
 
-app = create_app()
+pdf_handler = PDFHandler
+app = create_app(pdf_handler)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 

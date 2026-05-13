@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 
 
-def create_app():
+def create_app(pdf):
 
     app = Flask("Patient-Intake-System")
 
@@ -18,8 +18,7 @@ def create_app():
 
         data = request.json
 
-        fname = data.get("fname")
-        name = data.get("name")
+        pdf.test_pdf(data)
 
         print("Empfangen:")
         print(data)
