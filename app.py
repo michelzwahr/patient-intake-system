@@ -22,8 +22,7 @@ def create_app():
         name = data.get("name")
 
         print("Empfangen:")
-        print("Vorname:", fname)
-        print("Nachname:", name)
+        print(data)
 
         return jsonify({
             "status": "ok",
