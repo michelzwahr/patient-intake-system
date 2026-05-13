@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allgemeiner Fragebogen</title>
+    <script src="/static/js/Fragebogen_allgemein.js" defer></script>
+</head>
+<body>
+    <div id="personal_info">
+        <p>
+            <label for="fname">Vorname:</label>
+            <input type="text" id="fname", name="fname">
+        </p>
+
+        <p>
+            <label for="name">Nachname:</label>
+            <input type="text" id="name", name="name">
+        </p>
+        <p>
+            <label for="date">Geburtsdatum:</label>
+            <input type="date" id="date" name="date">
+        </p>
+        <p>
+            <label for="phone">Telefonnummer:</label>
+            <input type="tel" id="phone" name="phone">
+        </p>
+        <p>
+            <label for="adress">Adresse:</label>
+            <input type="text" id="adress", name="adress">
+        </p>
+        <p>
+            <label for="hausarzt">Hausärztin/-arzt:</label>
+            <input type="text" id="hausarzt", name="hausarzt">
+        </p>
+        <p>
+            <label for="other_doctors">Mitbehandelnde Fachärzte:</label>
+            <textarea name="other_doctors" id="other_doctors"></textarea>
+        </p>
+        <p>
+            <button onclick="page2()">Weiter</button>
+        </p>
+        
+
+    </div>
+    <div id="regelanamnese">
+        <p>
+            <label for="fist_period">Wie alt waren Sie bei Ihrer erste Regel?</label>
+            <input type="number" id="fist_period", name="fist_period">
+        </p>
+        <p>
+            <label for="last_period">Ihre letzte Regelblutung war</label>
+            <input type="text" id="last_period", name="last_period">
+        </p>
+        <p>
+            Ist oder war der Zyklus regelmäßig? <br>
+            <label>
+                <input type="radio" name="period_regulary" value="ja" onclick="period_regulary()">
+                Ja
+            </label>
+            <label>
+                <input type="radio" name="period_regulary" value="nein"  onclick="period_regulary()">
+                Nein
+            </label>
+            <div style="display: none;" id="period_regulary_div">
+                <p>
+                    <label for="period_regulary_details">Beschreibung:</label>
+                    <textarea name="period_regulary_details" id="period_regulary_details"></textarea>
+                </p>
+            </div>
+        </p>
+        <p>
+            <button onclick="page1()">Zurück</button>
+            <button onclick="page3()">Weiter</button>
+        </p>
+    </div>
+    
+</body>
+</html>
