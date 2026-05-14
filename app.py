@@ -32,4 +32,8 @@ def create_app(pdf):
     def success():
         return render_template("success.html")
 
+    @app.route("/anamnese")
+    def anamnese():
+        return render_template("Fragebogen_allgemein.html")
+
     return app

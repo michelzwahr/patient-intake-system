@@ -8,6 +8,7 @@
 </head>
 <body>
     <div id="personal_info">
+        <h2>Persönliche Informationen</h2>
         <p>
             <label for="fname">Vorname:</label>
             <input type="text" id="fname", name="fname">
@@ -37,6 +38,7 @@
             <label for="other_doctors">Mitbehandelnde Fachärzte:</label>
             <textarea name="other_doctors" id="other_doctors"></textarea>
         </p>
+        <hr>
         <p>
             <button onclick="page2()">Weiter</button>
         </p>
@@ -44,6 +46,7 @@
 
     </div>
     <div id="regelanamnese">
+        <h2>Regenanamnese</h2>
         <p>
             <label for="fist_period">Wie alt waren Sie bei Ihrer erste Regel?</label>
             <input type="number" id="fist_period", name="fist_period">
@@ -69,9 +72,70 @@
                 </p>
             </div>
         </p>
+        <hr>
         <p>
             <button onclick="page1()">Zurück</button>
             <button onclick="page3()">Weiter</button>
+        </p>
+    </div>
+    <div id="contraception" style="display: none;">
+        <h2 >bisherige Verhütungsmethoden</h2>
+        <p><small>(Pille, Pflaster, Hormonring, Spirale, Kondom …)</small></p>
+    <div id="contraception-list">
+        <div class="section">
+
+                <div class="contraception-row">
+                    <input type="text" placeholder="Methode">
+
+                    <input type="number"
+                        placeholder="Von"
+                        min="1900"
+                        max="2100">
+
+                    <input type="number"
+                        placeholder="Bis"
+                        min="1900"
+                        max="2100">
+
+                    <button type="button" onclick="removeRow(this)">
+                        ✕
+                    </button>
+                </div>
+
+        </div>
+
+    </div>
+    <button type="button" onclick="addRow()">
+        + Methode hinzufügen
+    </button>
+    <hr>
+        <p>
+            <button onclick="page2()">Zurück</button>
+            <button onclick="page4()">Weiter</button>
+        </p>
+    </div>
+    <div id="acute_symptoms" style="display: none;">
+        <h2>Haben Sie derzeit akute Beschwerden?</h2>
+        <p>
+            <label>
+                <input type="radio" name="acute_symptoms" value="nein" onclick="toggleAcuteSymptoms()">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="acute_symptoms" value="ja"  onclick="toggleAcuteSymptoms()">
+                Ja
+            </label>
+            <div style="display: none;" id="acute_symptoms_div">
+                <p>
+                    <label for="acute_symptoms_details">Beschreibung:</label>
+                    <textarea name="acute_symptoms_details" id="acute_symptoms_details"></textarea>
+                </p>
+            </div>
+        </p>
+        <hr>
+        <p>
+            <button onclick="page3()">Zurück</button>
+            <button onclick="page5()">Weiter</button>
         </p>
     </div>
     
