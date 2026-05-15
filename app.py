@@ -32,7 +32,7 @@ def create_app(pdf):
 
         print(format_string(data))
 
-        with open("patient_data.json.txt", "w", encoding="utf-8") as txt_file:
+        with open("patient_data.txt", "w", encoding="utf-8") as txt_file:
             txt_file.write(format_string(data))
 
         return jsonify({
