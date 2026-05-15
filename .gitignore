@@ -220,4 +220,5 @@ __marimo__/
 #project-specific
 storage/
 .json
-.txt.pdf
+.txt
+.pdf

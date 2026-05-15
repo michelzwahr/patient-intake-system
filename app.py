@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+import json
+from data_handler import format_string
 
 
 def create_app(pdf):
@@ -18,10 +20,20 @@ def create_app(pdf):
 
         data = request.json
 
-        pdf.test_pdf(data)
+        #pdf.test_pdf(data)
 
+        """
         print("Empfangen:")
         print(data)
+        """
+
+        with open("patient_data.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
+        print(format_string(data))
+
+        with open("patient_data.json.txt", "w", encoding="utf-8") as txt_file:
+            txt_file.write(format_string(data))
 
         return jsonify({
             "status": "ok",

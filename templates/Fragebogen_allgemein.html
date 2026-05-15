@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Allgemeiner Fragebogen</title>
     <script src="/static/js/Fragebogen_allgemein.js" defer></script>
+    <script src="/static/js/Fragebogen_abschicken.js" defer></script>
 </head>
 <body>
-    <div id="personal_info">
+    <div id="start_page">
+        <h1>Fragebogen</h1>
+        <p>Liebe Patientin,
+wenn Sie unsere Praxis das erste Mal aufsuchen, bitten wir Sie darum, diesen Fragebogen möglichst vollständig zu
+beantworten. Sie helfen uns damit, einen schnellen Überblick über Ihre Vorgeschichte zu erhalten, so dass wir die
+Behandlung darauf abstimmen können.
+Bitte sprechen Sie uns an, wenn Sie beim Ausfüllen Fragen haben. Vielen Dank für Ihre Mithilfe!
+        </p>
+        <p>Ihre Dr. Bettina Schulz, Dr. Heike Zwahr und Ihr Praxisteam</p>
+        <hr>
+        <button onclick="next()">Start</button>
+    </div>
+
+    <div id="personal_info" style="display: none;">
         <h2>Persönliche Informationen</h2>
         <p>
             <label for="fname">Vorname:</label>
@@ -40,16 +54,17 @@
         </p>
         <hr>
         <p>
-            <button onclick="page2()">Weiter</button>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
         </p>
         
 
     </div>
-    <div id="regelanamnese">
+    <div id="regelanamnese" style="display: none;">
         <h2>Regenanamnese</h2>
         <p>
-            <label for="fist_period">Wie alt waren Sie bei Ihrer erste Regel?</label>
-            <input type="number" id="fist_period", name="fist_period">
+            <label for="first_period">Wie alt waren Sie bei Ihrer erste Regel?</label>
+            <input type="number" id="first_period", name="first_period">
         </p>
         <p>
             <label for="last_period">Ihre letzte Regelblutung war</label>
@@ -58,11 +73,11 @@
         <p>
             Ist oder war der Zyklus regelmäßig? <br>
             <label>
-                <input type="radio" name="period_regulary" value="ja" onclick="period_regulary()">
+                <input type="radio" name="period_regulary" value="ja" onclick="toggleSection('period_regulary', 'period_regulary_div', 'nein')">
                 Ja
             </label>
             <label>
-                <input type="radio" name="period_regulary" value="nein"  onclick="period_regulary()">
+                <input type="radio" name="period_regulary" value="nein"  onclick="toggleSection('period_regulary', 'period_regulary_div', 'nein')">
                 Nein
             </label>
             <div style="display: none;" id="period_regulary_div">
@@ -74,8 +89,8 @@
         </p>
         <hr>
         <p>
-            <button onclick="page1()">Zurück</button>
-            <button onclick="page3()">Weiter</button>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
         </p>
     </div>
     <div id="contraception" style="display: none;">
@@ -105,24 +120,26 @@
         </div>
 
     </div>
-    <button type="button" onclick="addRow()">
+    <button type="button" onclick="addContraception()">
         + Methode hinzufügen
     </button>
     <hr>
         <p>
-            <button onclick="page2()">Zurück</button>
-            <button onclick="page4()">Weiter</button>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
         </p>
     </div>
-    <div id="acute_symptoms" style="display: none;">
+
+
+    <div id="symptoms_disease" style="display: none;">
         <h2>Haben Sie derzeit akute Beschwerden?</h2>
         <p>
             <label>
-                <input type="radio" name="acute_symptoms" value="nein" onclick="toggleAcuteSymptoms()">
+                <input type="radio" name="acute_symptoms" value="nein" onclick="toggleSection('acute_symptoms', 'acute_symptoms_div')">
                 Nein
             </label>
             <label>
-                <input type="radio" name="acute_symptoms" value="ja"  onclick="toggleAcuteSymptoms()">
+                <input type="radio" name="acute_symptoms" value="ja"  onclick="toggleSection('acute_symptoms', 'acute_symptoms_div')">
                 Ja
             </label>
             <div style="display: none;" id="acute_symptoms_div">
@@ -132,12 +149,290 @@
                 </p>
             </div>
         </p>
+        <h2>Haben Sie Vorerkrankungen? <span style="font-size: 1rem; font-weight: normal;">(z. B. Bluthochdruck, Diabetes, Asthma bronchiale …)</span></h2>
+        <p>
+            <label>
+                <input type="radio" name="disease" value="nein" onclick="toggleSection('disease', 'disease_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="disease" value="ja"  onclick="toggleSection('disease', 'disease_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="disease_div">
+                <p>
+                    <label for="disease_details">Beschreibung:</label>
+                    <textarea name="disease_details" id="disease_details"></textarea>
+                </p>
+            </div>
+        </p>
         <hr>
         <p>
-            <button onclick="page3()">Zurück</button>
-            <button onclick="page5()">Weiter</button>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
+        </p>
+    </div>
+
+
+    <div id="ops" style="display: none;">
+        <h2>Hatten Sie allgemeine Operationen? <span style="font-size: 1rem; font-weight: normal;">(z. B. Blinddarm-Entfernung …)</span></h2>
+        <p>
+            <label>
+                <input type="radio" name="gen_op" value="nein" onclick="toggleSection('gen_op', 'gen_op_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="gen_op" value="ja"  onclick="toggleSection('gen_op', 'gen_op_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="gen_op_div">
+                <p>
+                    <label for="gen_op_details">Beschreibung:</label>
+                    <textarea name="gen_op_details" id="gen_op_details"></textarea>
+                </p>
+            </div>
+        </p>
+        <h2>Hatten Sie gynäkologische Operationen? </h2>
+        <p>
+            <label>
+                <input type="radio" name="gyn_op" value="nein" onclick="toggleSection('gyn_op', 'gyn_op_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="gyn_op" value="ja"  onclick="toggleSection('gyn_op', 'gyn_op_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="gyn_op_div">
+                <p>
+                    <label for="gyn_op_details">Beschreibung:</label>
+                    <textarea name="gyn_op_details" id="gyn_op_details"></textarea>
+                </p>
+            </div>
+        </p>
+        <hr>
+        <p>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
         </p>
     </div>
     
+    <div id="birth", style="display: none;">
+        <h2>hatten Sie Geburten?</h2>
+        <p>
+            <label>
+                <input type="radio" name="births" value="nein" onclick="toggleSection('births', 'births_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="births" value="ja"  onclick="toggleSection('births', 'births_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="births_div">
+                <p>
+                    <label for="births_nb">Wie viele?</label>
+                    <input type="number" name="births_nb" id="births_nb">
+                </p>
+                <p>
+                    <label for="births_time">Wann?</label>
+                    <input type="text" name="births_time" id="births_time">
+                </p>
+                <p>
+                    <label for="births_complications">Komplikationen:</label>
+                    <textarea name="births_complications" id="births_complications"></textarea>
+                </p>
+            </div>
+        </p>
+        <h2>Hatten Sie Fehlgeburten, Schwangerschaftsabbrüche, Eileiterschwangerschaften?</h2>
+        <p>
+            <label>
+                <input type="radio" name="miscarriage" value="nein" onclick="toggleSection('miscarriage', 'miscarriage_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="miscarriage" value="ja"  onclick="toggleSection('miscarriage', 'miscarriage_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="miscarriage_div">
+                <p>
+                    <label for="miscarriage_details">Wie viele?</label>
+                    <input type="number" name="miscarriage_details" id="miscarriage_details">
+                </p>
+            </div>
+        </p>
+        <h2>Besteht ein Kinderwunsch?</h2>
+        <p>
+            <label>
+                <input type="radio" name="child_desire" value="nein" onclick="toggleSection('child_desire', 'child_desire_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="child_desire" value="ja"  onclick="toggleSection('child_desire', 'child_desire_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="child_desire_div">
+                <p>
+                    <label for="child_desire_details">Seit:</label>
+                    <input type="text" name="child_desire_details" id="child_desire_details">
+                </p>
+            </div>
+        </p>
+        <h2>Besteht eventuell eine Schwangerschaft oder vermuten Sie, schwanger zu sein?</h2>
+        <p>
+            <label>
+                <input type="radio" name="pregnancy" value="nein" onclick="toggleSection('pregnancy', 'pregnancy_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="pregnancy" value="ja"  onclick="toggleSection('pregnancy', 'pregnancy_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="pregnancy_div">
+                <p>
+                    <label for="pregnancy_details">Beschreibung:</label>
+                    <textarea name="pregnancy_details" id="pregnancy_details"></textarea>
+                    <br>
+                    <label for="last_period_pregnancy">Wann hatten Sie Ihre letzte Regelblutung?</label>
+                    <input type="text" name="last_period_pregnancy" id="last_period_pregnancy">
+                </p>
+            </div>
+        </p>
+        <hr>
+        <p>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
+        </p>
+    </div>
+
+    <div id="medications" style="display: none;">
+        <h2>Nehmen Sie regelmäßig Medikamente?</h2>
+    <div id="medication-list">
+        <div class="section">
+                <div class="medication-row">
+                    <input type="text" placeholder="Name">
+
+                    <input type="text"
+                        placeholder="Dosis">
+
+                    <input type="number"
+                        placeholder="Seit">
+
+                    <button type="button" onclick="removeRow(this)">
+                        ✕
+                    </button>
+                </div>
+        </div>
+
+    </div>
+    <button type="button" onclick="addMedication()">
+        + Medikament hinzufügen
+    </button>
+    <h2>Reagieren Sie allergisch auf Stoffe oder Medikamente?</h2>
+        <p>
+            <label>
+                <input type="radio" name="allergy" value="nein" onclick="toggleSection('allergy', 'allergy_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="allergy" value="ja"  onclick="toggleSection('allergy', 'allergy_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="allergy_div">
+                <p>
+                    <label for="allergy_details">Auf welche Stoffe?</label>
+                    <textarea name="allergy_details" id="allergy_details"></textarea>
+                </p>
+            </div>
+        </p>
+    <hr>
+        <p>
+            <button onclick="back()">Zurück</button>
+            <button onclick="next()">Weiter</button>
+        </p>
+    </div>
+    <div id="drugs" style="display: none;">
+        <h2>Konsumieren Sie folgende Stoffe?</h2>
+        <p>
+            <strong>Nikotin:</strong>
+            <label>
+                <input type="radio" name="nic" value="ja">
+                Ja
+            </label>
+            <label>
+                <input type="radio" name="nic" value="nein">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="nic" value="gelegentlich">
+                Gelegentlich
+            </label>
+        </p>
+        <p>
+            <strong>Cannabis:</strong>
+            <label>
+                <input type="radio" name="cannabis" value="ja">
+                Ja
+            </label>
+            <label>
+                <input type="radio" name="cannabis" value="nein">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="cannabis" value="gelegentlich">
+                Gelegentlich
+            </label>
+        </p>
+        <p>
+            <strong>Alkohol:</strong>
+            <label>
+                <input type="radio" name="alc" value="ja">
+                Ja
+            </label>
+            <label>
+                <input type="radio" name="alc" value="nein">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="alc" value="gelegentlich">
+                Gelegentlich
+            </label>
+        </p>
+        <p>
+            <strong>Andere Drogen:</strong>
+            <label>
+                <input type="radio" name="other_drugs" value="ja">
+                Ja
+            </label>
+            <label>
+                <input type="radio" name="other_drugs" value="nein">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="other_drugs" value="gelegentlich">
+                Gelegentlich
+            </label>
+        </p>
+        <h2>Haben Sie ein persönliches Anliegen?</h2>
+        <p>
+            <label>
+                <input type="radio" name="personal_matter" value="nein" onclick="toggleSection('personal_matter', 'personal_matter_div')">
+                Nein
+            </label>
+            <label>
+                <input type="radio" name="personal_matter" value="ja"  onclick="toggleSection('personal_matter', 'personal_matter_div')">
+                Ja
+            </label>
+            <div style="display: none;" id="personal_matter_div">
+                <p>
+                    <label for="personal_matter_details">Anliegen:</label>
+                    <textarea name="personal_matter_details" id="personal_matter_details"></textarea>
+                </p>
+            </div>
+        </p>
+        <hr>
+        <p>
+            <button onclick="back()">Zurück</button>
+            <button type="button" id="submit-questionnaire">Abschicken</button>
+        </p>
+    </div>
 </body>
 </html>
