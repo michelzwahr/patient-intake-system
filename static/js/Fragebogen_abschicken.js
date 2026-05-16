@@ -38,6 +38,7 @@ function collectMedicationRows() {
 
 function collectQuestionnaireData() {
     return {
+        type: "Fragebogen_allgemein",
         fname: getValue("fname"),
         name: getValue("name"),
         date: getValue("date"),

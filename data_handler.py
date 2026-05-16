@@ -1,3 +1,8 @@
+import json
+from datetime import datetime
+import os
+from pathlib import Path
+
 def format_string(data: dict):
     methods = data["contraception"]
 
@@ -9,7 +14,6 @@ def format_string(data: dict):
     else:
         text_contraception = "Keine Verhütungsmethoden"
 
-
     medications = data["medications"]
 
     if medications:
@@ -19,8 +23,6 @@ def format_string(data: dict):
         )
     else:
         text_medications = "Keine regelmäßige Einnahme von Medikamenten"
-
-
 
     if data["births"] == "ja":
         births_text = f"""{data["births_nb"]}
@@ -32,7 +34,6 @@ def format_string(data: dict):
     }"""
     else:
         births_text = "Nein"
-
 
     if data["pregnancy"] == "ja":
         pregnancy_text = f"""
@@ -48,7 +49,7 @@ Adresse: {data["adress"]}
 Hausarzt: {data["hausarzt"]}
 Mitbehandelnde Fachärzte: {data["other_doctors"]}
 Erste Regel: {data["first_period"]}
-Letzte Tegel: {data["last_period"]}
+Letzte Regel: {data["last_period"]}
 Regel: {"Regelmäßig" if data["period_regulary"] == "ja"
         else data["period_regulary_details"]}
 Verhütung: {text_contraception}
@@ -64,7 +65,7 @@ Geburten: {births_text}
 Fehlgeburten: {"Nein" if data["miscarriage"] == "nein"
                          else data["miscarriage_details"]}
 Kinderwunsch: {"Nein" if data["child_desire"] == "nein"
-                         else data["child_desire_details"]}
+                         else "seit "+data["child_desire_details"]}
 Schwangerschaft: {pregnancy_text}
 Medikamente: {text_medications}
 Allergien: {"Nein" if data["allergy"] == "nein"
@@ -77,3 +78,19 @@ Einnahme von:
 Persönliches Anliegen: {"Nein" if data["personal_matter"] == "nein"
                          else data["personal_matter_details"]}
 """
+
+def save_data(data):
+    BASE_DIR = Path(__file__).resolve().parent
+    filename = f"{data['fname']}_{data['name']}_{datetime.today().timestamp()}"
+    folder = BASE_DIR / "storage" / data["type"]
+    folder.mkdir(parents=True, exist_ok=True)
+    filepath = folder / filename
+
+    print(BASE_DIR)
+    print(filepath.resolve())
+
+    with open(f"{filepath}.json", "w", encoding="utf-8") as json_file:
+        json.dump(data, json_file, ensure_ascii=False, indent=4)
+
+    with open(f"{filepath}.txt", "w", encoding="utf-8") as txt_file:
+        txt_file.write(format_string(data))
