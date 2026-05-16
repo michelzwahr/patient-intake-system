@@ -26,7 +26,8 @@ def create_app():
 
         data = request.json
 
-        dh.save_data(data)
+        filepath = dh.save_files(data)
+        dh.save_data(data, filepath)
 
         return jsonify({
             "status": "ok",

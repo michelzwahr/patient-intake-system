@@ -1,7 +1,9 @@
 import json
+import time
 from datetime import datetime
-import os
 from pathlib import Path
+from models import db, Patient, ContactData, Document
+from sqlalchemy.exc import OperationalError
 
 def format_string(data: dict):
     methods = data["contraception"]
@@ -79,18 +81,70 @@ Persönliches Anliegen: {"Nein" if data["personal_matter"] == "nein"
                          else data["personal_matter_details"]}
 """
 
-def save_data(data):
+def save_files(data):
     BASE_DIR = Path(__file__).resolve().parent
     filename = f"{data['fname']}_{data['name']}_{datetime.today().timestamp()}"
     folder = BASE_DIR / "storage" / data["type"]
     folder.mkdir(parents=True, exist_ok=True)
     filepath = folder / filename
 
-    print(BASE_DIR)
-    print(filepath.resolve())
-
     with open(f"{filepath}.json", "w", encoding="utf-8") as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
     with open(f"{filepath}.txt", "w", encoding="utf-8") as txt_file:
         txt_file.write(format_string(data))
+
+    return filepath.resolve()
+
+def save_data(data, filepath):
+    birth_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
+    created_at = datetime.now().date()
+    base_path = Path(filepath)
+    filetype = data["type"]
+
+    patient = Patient.query.filter_by(
+        fname=data["fname"],
+        name=data["name"],
+        birth_date=birth_date
+    ).one_or_none()
+
+    if patient is None:
+        patient = Patient(
+            fname=data["fname"],
+            name=data["name"],
+            birth_date=birth_date
+        )
+        db.session.add(patient)
+        db.session.flush()
+
+    contact = ContactData.query.filter_by(p_id=patient.p_id).one_or_none()
+
+    if contact is None:
+        contact = ContactData(
+            adress=data["adress"],
+            telephone=data["phone"],
+            p_id=patient.p_id
+        )
+        db.session.add(contact)
+    else:
+        contact.adress = data["adress"]
+        contact.telephone = data["phone"]
+
+    json_document = Document(
+        document_type=filetype,
+        path=str(base_path.with_suffix(".json")),
+        created_at=created_at,
+        p_id=patient.p_id
+    )
+
+    txt_document = Document(
+        document_type=filetype,
+        path=str(base_path.with_suffix(".txt")),
+        created_at=created_at,
+        p_id=patient.p_id
+    )
+
+    db.session.add(json_document)
+    db.session.add(txt_document)
+    db.session.commit()
+
