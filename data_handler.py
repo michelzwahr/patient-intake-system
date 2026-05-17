@@ -190,8 +190,21 @@ def patient_info(patient_id):
             data = json.load(file)
 
             data["filename"] = os.path.splitext(os.path.basename(path))[0]
+            data["filepath"] = os.path.relpath(path, "storage")
 
             data_list.append(data)
     
     return data_list
 
+def provide_download(filename):
+    STORAGE_DIR = Path("storage").resolve()
+    file_path = (STORAGE_DIR / filename).resolve().with_suffix(".txt")
+
+    if not str(file_path).startswith(str(STORAGE_DIR)):
+        return ["error", 403]
+
+    if not file_path.exists():
+        return ["error", 404]
+    
+    else:
+        return ["filepath", file_path]

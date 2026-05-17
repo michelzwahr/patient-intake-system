@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify, redirect, session
+from flask import Flask, render_template, request, jsonify, redirect, session, abort, send_file
 from werkzeug.security import check_password_hash, generate_password_hash
 import data_handler as dh
-
+from pathlib import Path
 
 def create_app():
 
@@ -12,6 +12,7 @@ def create_app():
     "hzwahr": generate_password_hash('1234'),
     "bschulz": generate_password_hash('1234')
     }
+
 
     @app.route("/")
     def index():
@@ -74,4 +75,18 @@ def create_app():
     def get_patient(patient_id):
         return dh.patient_info(patient_id)
     
+    @app.route("/download/<path:path>")
+    def download(path):
+        if "user" not in session:
+            return redirect("/login")
+        else:
+            download = dh.provide_download(path)
+            if download[0] == "error":
+                abort(download[1])
+            elif download[0] == "filepath":
+                return send_file(
+                    download[1],
+                    as_attachment=True
+                )
+
     return app

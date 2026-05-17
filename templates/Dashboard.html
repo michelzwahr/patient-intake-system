@@ -10,7 +10,13 @@
 </head>
 <body>
     <h1>Hallo {{ username }}</h1>
+    <form action="/logout" method="POST">
+        <button type="submit">
+            Logout
+        </button>
+    </form>
 
+    <br>
 
     <select id="patient-select">
         <option value="">Bitte auswählen</option>
@@ -21,11 +27,15 @@
             </option>
         {% endfor %}
     </select>
+    <p id="filepath" style="display: none;"></p>
 
+    
+    
     <select name="Formulare" id="forms">
         <option value="">Bitte auswählen</option>
     </select>
-
+    
+    <button onclick="download_file()">Download txt</button>
 
     <div id="patient-info">
     </div>
@@ -35,7 +45,7 @@
         <details>
             <summary>Persönliche Daten</summary>
             <p>Geburtsdatum: <span class="date">01.01.2000</span></p>
-            <p>telefon: <span class="phone">123456789</span></p>
+            <p>Telefon: <span class="phone">123456789</span></p>
             <p>Adresse: <span class="adress">Musterstraße 1</span></p>
         </details>
 
@@ -109,11 +119,7 @@
         <option></option>
     </template>
 
-    <form action="/logout" method="POST">
-        <button type="submit">
-            Logout
-        </button>
-    </form>
+
 
     <script src="/static/js/Dashboard.js"></script>
 </body>

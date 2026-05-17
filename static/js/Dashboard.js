@@ -9,6 +9,14 @@ const selectionTemplate = document.getElementById("selection-template");
 
 let currentFormsData = [];
 
+function download_file(){
+    const selectedForm = formsSelect.value;
+    const dataSet = currentFormsData[selectedForm];
+    path = dataSet.filepath;
+    console.log(path);
+    window.location.href = `/download/${path}`;
+}
+
 function setTextContent(container, selector, value) {
     const element = container.querySelector(selector);
 
@@ -161,6 +169,7 @@ patientSelect.addEventListener("change", async () => {
 
         option.value = index;
         option.textContent = dataSet.filename;
+        
 
         formsSelect.appendChild(optionClone);
     });
@@ -173,6 +182,8 @@ formsSelect.addEventListener("change", () => {
     if (dataSet) {
         console.log(dataSet.filename);
     }
+    //document.getElementById("filepath").innerText = dataSet.filepath;
 
     renderPatientForm(dataSet);
 });
+
