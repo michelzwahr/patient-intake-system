@@ -97,7 +97,17 @@ def save_files(data):
     return filepath
 
 def save_data(data, filepath):
-    birth_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
+    try:
+        birth_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
+    except ValueError:
+        patient = Patient.query.filter_by(
+            fname=data["fname"],
+            name=data["name"]
+        ).one_or_none()
+        if patient is not None:
+            birth_date = patient.birth_date
+        else:
+            raise Exception("No birth date specified")
     created_at = datetime.now().date()
     base_path = filepath
     document_type = data["type"]
