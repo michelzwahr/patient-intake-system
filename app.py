@@ -61,7 +61,7 @@ def create_app():
         else:
             username = session["user"]
 
-        return render_template("dashboard.html", username=username, patients=dh.select_patients())
+        return render_template("Dashboard.html", username=username, patients=dh.select_patients())
     
     @app.route("/logout", methods=["POST"])
     def logout():
