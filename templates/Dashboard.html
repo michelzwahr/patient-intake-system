@@ -4,18 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="/static/js/Dashboard.js"></script>
+    
 
     <title>Dashboard</title>
 </head>
 <body>
     <h1>Hallo {{ username }}</h1>
 
+
+    <select id="patient-select">
+        <option value="">Bitte auswählen</option>
+
+        {% for patient in patients %}
+            <option value="{{ patient.p_id }}">
+                {{ patient.fname }} {{ patient.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="Formulare" id="forms">
+        <option value="">Bitte auswählen</option>
+    </select>
+
+
+    <div id="patient-info">
+    </div>
+    <template id="patient-template">
+        
+        <p>Patientin: <span class="name">Mia Mustermann</span></p>
+        <details>
+            <summary>Persönliche Daten</summary>
+            <p>Geburtsdatum: <span class="date">01.01.2000</span></p>
+            <p>telefon: <span class="phone">123456789</span></p>
+            <p>Adresse: <span class="adress">Musterstraße 1</span></p>
+        </details>
+
+        <details open>
+            <summary>Regelanamnese</summary>
+            <p>Erste Regel: <span class="first_period">15</span></p>
+            <p>Letzte Regel: <span class="last_period">vor 3 Wochen</span></p>
+            <p>Regel: <span class="period">regelmäßig</span></p>
+        </details>
+
+        <details open>
+            <summary>Verhütung</summary>
+            <ul class="contraception-list"></ul>
+        </details>
+        
+        <details open>
+            <summary>Medizinische Details</summary>
+            <p>Akute Beschwerden: <span class="acute_symptoms">Nein</span></p>
+            <p>Vorerkrankungen: <span class="disease">Nein</span></p>
+            <p>Allgemeine Operationen: <span class="gen_op">Nein</span></p>
+            <p>Gynäkologische Operationen: <span class="gyn_op">Nein</span></p>
+        </details>
+
+        <details open>
+            <summary>Geburten</summary>
+            <p>Anzahl: <span class="births_nb">1</span>
+                <p class="births">Wann: <span class="births_time">2020</span></p>
+                <p class="births">Komplikationen: <span class="births_complications">Nein</span></p>
+            </p>
+            <p>Fehlgeburten: <span class="miscarriage">Nein</span></p>
+            <p>Kinderwunsch: <span class="child_desire">Nein</span></p>
+            <p>Schwangerschaft: <span class="pregnancy">Nein</span></p>
+        </details>
+
+        <details open>
+            <summary>Medikamnte und Allergien</summary>
+            
+            <ul class="medication-list"></ul>
+
+            <p>Allergien: <span class="allergies">Nein</span></p>
+        </details>
+
+        <details open>
+            <summary>Substanzen</summary>
+            <p>Alkohol: <span class="alc">Nein</span></p>
+            <p>Nikotin: <span class="nic">Nein</span></p>
+            <p>Cannabis: <span class="cannabis">Nein</span></p>
+            <p>Andere Drogen: <span class="other_drugs">Nein</span></p>
+        </details>
+
+        <details open>
+            <summary>Persönliches Anliegen</summary>
+            <p class="personal_matter">Ein Text</p>
+        </details>
+    </template>
+
+
+    <template id="medication-template">
+
+    <li>Medikament: <span class="med_name"></span> | Dosis: <span class="med_dose"></span> | Seit: <span class="med_since"></span></li>
+
+    </template>
+
+    <template id="contraception-template">
+
+    <li><span class="con_method"></span> (<span class="con_from"></span> - <span class="con_to"></span>)</li>
+
+    </template>
+
+    <template id="selection-template">
+        <option></option>
+    </template>
+
     <form action="/logout" method="POST">
         <button type="submit">
             Logout
         </button>
     </form>
-    
+
+    <script src="/static/js/Dashboard.js"></script>
 </body>
 </html>

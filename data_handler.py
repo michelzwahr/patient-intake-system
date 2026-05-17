@@ -1,9 +1,9 @@
 import json
-import time
 from datetime import datetime
 from pathlib import Path
 from models import db, Patient, ContactData, Document
-from sqlalchemy.exc import OperationalError
+from sqlalchemy import select
+import os
 
 def format_string(data: dict):
     methods = data["contraception"]
@@ -83,7 +83,7 @@ Persönliches Anliegen: {"Nein" if data["personal_matter"] == "nein"
 
 def save_files(data):
     BASE_DIR = Path(__file__).resolve().parent
-    filename = f"{data['fname']}_{data['name']}_{datetime.today().timestamp()}"
+    filename = f"{data['fname']}_{data['name']}_{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}"
     folder = BASE_DIR / "storage" / data["type"]
     folder.mkdir(parents=True, exist_ok=True)
     filepath = folder / filename
@@ -94,13 +94,13 @@ def save_files(data):
     with open(f"{filepath}.txt", "w", encoding="utf-8") as txt_file:
         txt_file.write(format_string(data))
 
-    return filepath.resolve()
+    return filepath
 
 def save_data(data, filepath):
     birth_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
     created_at = datetime.now().date()
-    base_path = Path(filepath)
-    filetype = data["type"]
+    base_path = filepath
+    document_type = data["type"]
 
     patient = Patient.query.filter_by(
         fname=data["fname"],
@@ -131,20 +131,55 @@ def save_data(data, filepath):
         contact.telephone = data["phone"]
 
     json_document = Document(
-        document_type=filetype,
+        document_type=document_type,
         path=str(base_path.with_suffix(".json")),
         created_at=created_at,
+        filetype="json",
         p_id=patient.p_id
     )
 
     txt_document = Document(
-        document_type=filetype,
+        document_type=document_type,
         path=str(base_path.with_suffix(".txt")),
         created_at=created_at,
+        filetype="txt",
         p_id=patient.p_id
     )
 
     db.session.add(json_document)
     db.session.add(txt_document)
     db.session.commit()
+
+def select_patients():
+    patients = db.session.execute(
+        select(
+            Patient.p_id,
+            Patient.fname,
+            Patient.name
+        )
+    ).all()
+    return patients
+
+def patient_info(patient_id):
+    paths = db.session.execute(
+
+        select(Document.path).where(
+            Document.p_id == patient_id,
+            Document.document_type == "Fragebogen_allgemein",
+            Document.filetype == "json"
+        )
+
+    ).scalars().all()
+
+    data_list = []
+
+    for path in paths:
+        with open(path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+
+            data["filename"] = os.path.splitext(os.path.basename(path))[0]
+
+            data_list.append(data)
+    
+    return data_list
 
