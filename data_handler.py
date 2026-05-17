@@ -137,8 +137,10 @@ def save_data(data, filepath):
         )
         db.session.add(contact)
     else:
-        contact.adress = data["adress"]
-        contact.telephone = data["phone"]
+        if data["adress"] != "":
+            contact.adress = data["adress"]
+        if data["phone"] != "":
+            contact.telephone = data["phone"]
 
     json_document = Document(
         document_type=document_type,
