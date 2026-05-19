@@ -4,43 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <link rel="stylesheet" href="/static/css/app.css">
 
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Hallo {{ username }}</h1>
-    <form action="/logout" method="POST">
-        <button type="submit">
-            Logout
-        </button>
-    </form>
+    <div class="dashboard-shell">
+        <div class="dashboard-main">
+            <h1>Hallo {{ username }}</h1>
+            <div class="dashboard-actions">
+                <button onclick="logout()">Ausloggen</button>
+                <button onclick="download_file()">Eintrag herunterladen</button>
+            </div>
 
-    <br>
+            <div class="dashboard-controls">
+                <label for="patient-select">Patientin:</label>
+                <select id="patient-select" name="patient-select">
+                    <option value="">Bitte auswählen</option>
 
-    <select id="patient-select">
-        <option value="">Bitte auswählen</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.p_id }}">
+                            {{ patient.fname }} {{ patient.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <p id="filepath" style="display: none;"></p>
 
-        {% for patient in patients %}
-            <option value="{{ patient.p_id }}">
-                {{ patient.fname }} {{ patient.name }}
-            </option>
-        {% endfor %}
-    </select>
-    <p id="filepath" style="display: none;"></p>
+                <label for="forms">Eintrag:</label>
+                <select name="Formulare" id="forms">
+                    <option value="">Bitte auswählen</option>
+                </select>
+            </div>
+        </div>
 
-    
-    
-    <select name="Formulare" id="forms">
-        <option value="">Bitte auswählen</option>
-    </select>
-    
-    <button onclick="download_file()">Download txt</button>
-
-    <div id="patient-info">
+        <div id="patient-info" style="display: none;">
+        </div>
     </div>
+
     <template id="patient-template">
-        
         <p>Patientin: <span class="name">Mia Mustermann</span></p>
         <details>
             <summary>Persönliche Daten</summary>
@@ -71,20 +72,17 @@
 
         <details open>
             <summary>Geburten</summary>
-            <p>Anzahl: <span class="births_nb">1</span>
-                <p class="births">Wann: <span class="births_time">2020</span></p>
-                <p class="births">Komplikationen: <span class="births_complications">Nein</span></p>
-            </p>
+            <p>Anzahl: <span class="births_nb">1</span></p>
+            <p class="births">Wann: <span class="births_time">2020</span></p>
+            <p class="births">Komplikationen: <span class="births_complications">Nein</span></p>
             <p>Fehlgeburten: <span class="miscarriage">Nein</span></p>
             <p>Kinderwunsch: <span class="child_desire">Nein</span></p>
             <p>Schwangerschaft: <span class="pregnancy">Nein</span></p>
         </details>
 
         <details open>
-            <summary>Medikamnte und Allergien</summary>
-            
+            <summary>Medikamente und Allergien</summary>
             <ul class="medication-list"></ul>
-
             <p>Allergien: <span class="allergies">Nein</span></p>
         </details>
 
@@ -102,24 +100,17 @@
         </details>
     </template>
 
-
     <template id="medication-template">
-
-    <li>Medikament: <span class="med_name"></span> | Dosis: <span class="med_dose"></span> | Seit: <span class="med_since"></span></li>
-
+        <li>Medikament: <span class="med_name"></span> | Dosis: <span class="med_dose"></span> | Seit: <span class="med_since"></span></li>
     </template>
 
     <template id="contraception-template">
-
-    <li><span class="con_method"></span> (<span class="con_from"></span> - <span class="con_to"></span>)</li>
-
+        <li><span class="con_method"></span> (<span class="con_from"></span> - <span class="con_to"></span>)</li>
     </template>
 
     <template id="selection-template">
         <option></option>
     </template>
-
-
 
     <script src="/static/js/Dashboard.js"></script>
 </body>

@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/app.css">
     <title>Login</title>
 </head>
 <body>
-    <form method="POST" action="/login">
-
-    <input type="text" name="username">
-    <br>
-    <input type="password" name="password">
-    <br>
-    <button type="submit">Login</button>
-
-</form>
+    <form method="POST" action="/login" id="login_form">
+        <label id="login_label">Login</label>
+        <input type="text" name="username" placeholder="Nutzername">
+        <br>
+        <input type="password" name="password" placeholder="Passwort">
+        <br>
+        <button type="submit">Login</button>
+    </form>
 </body>
 </html>

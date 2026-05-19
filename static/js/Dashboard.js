@@ -9,6 +9,10 @@ const selectionTemplate = document.getElementById("selection-template");
 
 let currentFormsData = [];
 
+function logout(){
+    window.location.href = `/logout`;
+}
+
 function download_file(){
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
@@ -35,6 +39,7 @@ function formatConditionalValue(flag, details, yesText = "Ja", noText = "Nein") 
 }
 
 function renderPatientForm(dataSet) {
+    patientInfo.style.display = "block";
     patientInfo.innerHTML = "";
 
     if (!dataSet) {

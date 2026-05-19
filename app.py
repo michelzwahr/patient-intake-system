@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, session, abort, send_file
 from werkzeug.security import check_password_hash, generate_password_hash
 import data_handler as dh
-from pathlib import Path
 
 def create_app():
 
