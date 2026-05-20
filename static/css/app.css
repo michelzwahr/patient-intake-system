@@ -232,14 +232,16 @@ p label:has(input[type="radio"]) {
     color: var(--text);
 }
 
-body:has(#login_form) {
+body:has(#login_form),
+#success {
     display: grid;
     min-height: 100vh;
     place-items: center;
     padding: 24px 16px;
 }
 
-#login_form {
+#login_form,
+#success_div {
     width: min(100%, 420px);
     background-color: var(--soft);
 }
