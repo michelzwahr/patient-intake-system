@@ -83,7 +83,7 @@ Persönliches Anliegen: {"Nein" if data["personal_matter"] == "nein"
 
 def save_files(data):
     BASE_DIR = Path(__file__).resolve().parent
-    filename = f"{data['fname']}_{data['name']}_{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}"
+    filename = f"{data['type']}_{data['name']}_{datetime.now().strftime('%d-%m-%Y--%H-%M-%S')}"
     folder = BASE_DIR / "storage" / data["type"]
     folder.mkdir(parents=True, exist_ok=True)
     filepath = folder / filename
