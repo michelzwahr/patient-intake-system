@@ -16,7 +16,7 @@
     --muted: #6b5f6b;
     --primary: #866f85;
     --primary-dark: #6d5b6f;
-    --soft: #f1edf2;
+    --soft: #ede5ef;
 }
 
 * {
@@ -238,6 +238,7 @@ body:has(#login_form),
     min-height: 100vh;
     place-items: center;
     padding: 24px 16px;
+    background-color: var(--bg);
 }
 
 #login_form,
