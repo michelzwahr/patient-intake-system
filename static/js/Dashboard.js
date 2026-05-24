@@ -21,6 +21,21 @@ function download_file(){
     window.location.href = `/download/${path}`;
 }
 
+async function search_patient(){
+    const patient_str = document.getElementById("patient-name").value;
+    const response = await fetch(`/search/${patient_str}`);
+    const patients = await response.json();
+
+    patientSelect.innerHTML = "<option>Bitte auswählen</option>";
+
+    patients.forEach((result) => {
+        const newOption = document.createElement("option");
+        newOption.value = result.id;
+        newOption.textContent = `${result.fname} ${result.name}`;
+        patientSelect.appendChild(newOption);
+    })
+}
+
 function setTextContent(container, selector, value) {
     const element = container.querySelector(selector);
 
@@ -187,7 +202,6 @@ formsSelect.addEventListener("change", () => {
     if (dataSet) {
         console.log(dataSet.filename);
     }
-    //document.getElementById("filepath").innerText = dataSet.filepath;
 
     renderPatientForm(dataSet);
 });

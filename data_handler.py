@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from models import db, Patient, ContactData, Document, User
-from sqlalchemy import select
+from sqlalchemy import select, or_
 import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from typing import TypedDict
@@ -235,3 +235,24 @@ def check_user(username: str, password: str) -> bool:
     if hashed_password is None:
         return False
     return check_password_hash(hashed_password, password)
+
+def search_user_by_name(name: str) -> json:
+    search_result = db.session.execute(
+        select(Patient.fname, Patient.name, Patient.p_id).where(
+            or_(
+                Patient.name.ilike(f"%{name}%"),
+                Patient.fname.ilike(f"%{name}%")
+            )
+        )
+    ).all()
+    result = []
+    for element in search_result:
+        result.append(
+            {
+                "fname": element[0],
+                "name": element[1],
+                "id": element[2]
+            }
+        )
+    print(result)
+    return json.dumps(result)

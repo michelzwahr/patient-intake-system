@@ -58,7 +58,7 @@ def create_app():
         else:
             username = session["user"]
 
-        return render_template("Dashboard.html", username=username, patients=dh.select_patients())
+        return render_template("Dashboard.html")
     
     @app.route("/logout")
     def logout():
@@ -71,6 +71,10 @@ def create_app():
     def get_patient(patient_id):
         return dh.patient_info(patient_id)
     
+    @app.route("/search/<string:patient_name>")
+    def search(patient_name):
+        return dh.search_user_by_name(patient_name)
+
     @app.route("/download/<path:path>")
     def download(path):
         if "user" not in session:

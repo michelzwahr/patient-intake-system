@@ -19,16 +19,10 @@
 
             <div class="dashboard-controls">
                 <label for="patient-select">Patientin:</label>
-                <select id="patient-select" name="patient-select">
-                    <option value="">Bitte auswählen</option>
+                <input type="text" name="patient-name" id="patient-name">
+                <button id="search-patient" onclick="search_patient()">Suchen</button>
 
-                    {% for patient in patients %}
-                        <option value="{{ patient.p_id }}">
-                            {{ patient.fname }} {{ patient.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <p id="filepath" style="display: none;"></p>
+                <select name="patient-select" id="patient-select"></select>
 
                 <label for="forms">Eintrag:</label>
                 <select name="Formulare" id="forms">
@@ -40,6 +34,7 @@
         <div id="patient-info" style="display: none;">
         </div>
     </div>
+
 
     <template id="patient-template">
         <p>Patientin: <span class="name">Mia Mustermann</span></p>
