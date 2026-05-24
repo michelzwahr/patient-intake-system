@@ -7,12 +7,6 @@ def create_app():
     app = Flask("Patient-Intake-System")
     app.secret_key = "DEIN_SECRET_KEY"
 
-    users = {
-    "hzwahr": generate_password_hash('1234'),
-    "bschulz": generate_password_hash('1234')
-    }
-
-
     @app.route("/")
     def index():
         return render_template("index.html")
@@ -47,7 +41,10 @@ def create_app():
         if request.method == "POST":
             username = request.form["username"]
             password = request.form["password"]
-            if username in users and check_password_hash(users[username], password):
+#            if username in users and check_password_hash(users[username], password):
+#                session["user"] = username
+#                return redirect("/dashboard")
+            if dh.check_user(username, password):
                 session["user"] = username
                 return redirect("/dashboard")
 

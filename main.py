@@ -1,5 +1,6 @@
 from app import create_app
-from models import Patient, Document, ContactData, db
+from models import db
+import data_handler as dh
 
 app = create_app()
 
@@ -19,6 +20,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
     
+    # Standard-User im sicheren Kontext anlegen
+    default_users = [
+        {"username": "hzwahr", "password": "1234"},
+        {"username": "bschulz", "password": "1234"}
+    ]
+    dh.create_users(default_users)
 
 
 if __name__ == "__main__":

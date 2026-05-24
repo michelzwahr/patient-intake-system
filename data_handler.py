@@ -1,9 +1,15 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from models import db, Patient, ContactData, Document
+from models import db, Patient, ContactData, Document, User
 from sqlalchemy import select
 import os
+from werkzeug.security import check_password_hash, generate_password_hash
+from typing import TypedDict
+
+class UserData(TypedDict):
+    username: str
+    password: str
 
 def format_string(data: dict):
     methods = data["contraception"]
@@ -208,3 +214,24 @@ def provide_download(filename):
     
     else:
         return ["filepath", file_path]
+    
+def create_users(users: list[UserData]) -> None:
+    for user in users:
+        existing_user = User.query.filter_by(username=user["username"]).first()
+        if existing_user is None:
+            new_user = User(
+                username=user["username"],
+                password_hash=generate_password_hash(user["password"])
+            )
+            db.session.add(new_user)
+    db.session.commit()
+
+def check_user(username: str, password: str) -> bool:
+    hashed_password = db.session.execute(
+        select(User.password_hash).where(
+            User.username == username
+        )
+    ).scalar_one_or_none()
+    if hashed_password is None:
+        return False
+    return check_password_hash(hashed_password, password)

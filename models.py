@@ -32,3 +32,11 @@ class Document(db.Model):
     filetype = db.Column(db.String(10))
 
     p_id = db.Column(db.Integer, db.ForeignKey("patient.p_id"))
+
+class User(db.Model):
+    u_id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(100))
+
+    password_hash = db.Column(db.String(255))
+
