@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, jsonify, redirect, session, abort, send_file
-from werkzeug.security import check_password_hash, generate_password_hash
 import data_handler as dh
 
 def create_app():
 
     app = Flask("Patient-Intake-System")
-    app.secret_key = "DEIN_SECRET_KEY"
 
     @app.route("/")
     def index():
@@ -46,6 +44,7 @@ def create_app():
 #                return redirect("/dashboard")
             if dh.check_user(username, password):
                 session["user"] = username
+                print(session)
                 return redirect("/dashboard")
 
         return render_template("login.html")
@@ -62,18 +61,19 @@ def create_app():
     
     @app.route("/logout")
     def logout():
-
         session.pop("user", None)
 
         return redirect("/login")
 
     @app.route("/patient/<int:patient_id>")
     def get_patient(patient_id):
-        return dh.patient_info(patient_id)
+        if "user" in session:
+            return dh.patient_info(patient_id)
     
     @app.route("/search/<string:patient_name>")
     def search(patient_name):
-        return dh.search_user_by_name(patient_name)
+        if "user" in session:
+            return dh.search_user_by_name(patient_name)
 
     @app.route("/download/<path:path>")
     def download(path):
