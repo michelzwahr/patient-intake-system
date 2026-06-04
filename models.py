@@ -2,6 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+"""
+-----Database-tables-----
+>> using ORM (Object-Relational Mapping) to represent database with python objects
+>> https://www.sqlalchemy.org/
+"""
+
 class Patient(db.Model):
     p_id = db.Column(db.Integer, primary_key=True)
 

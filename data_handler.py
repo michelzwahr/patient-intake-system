@@ -7,10 +7,12 @@ import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from typing import TypedDict
 
+# TypedDict for user data to prevent incorrect formatting
 class UserData(TypedDict):
     username: str
     password: str
 
+# Format the data from a dictionary to a string (for the .txt-file)
 def format_string(data: dict):
     methods = data["contraception"]
 
@@ -87,43 +89,56 @@ Persönliches Anliegen: {"Nein" if data["personal_matter"] == "nein"
                          else data["personal_matter_details"]}
 """
 
+# Saving data in the folder 'storage'
 def save_files(data):
     BASE_DIR = Path(__file__).resolve().parent
+    # filename-format: <Document_type>_<Sirname>_<date: %d-%m-%Y--%H-%M-%S>
     filename = f"{data['type']}_{data['name']}_{datetime.now().strftime('%d-%m-%Y--%H-%M-%S')}"
     folder = BASE_DIR / "storage" / data["type"]
-    folder.mkdir(parents=True, exist_ok=True)
+    folder.mkdir(parents=True, exist_ok=True) # Preventing error if folder is not available
     filepath = folder / filename
 
+    # Saving data as JSON-file
     with open(f"{filepath}.json", "w", encoding="utf-8") as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
+    # Saving data as TXT-file
     with open(f"{filepath}.txt", "w", encoding="utf-8") as txt_file:
         txt_file.write(format_string(data))
 
+    # Returning filepath for saving data correctly in database
     return filepath
 
+# Saving data in the database
 def save_data(data, filepath):
+    # Checking for valid birth date
     try:
         birth_date = datetime.strptime(data["date"], "%Y-%m-%d").date()
     except ValueError:
+        # checking database for birth date if it is not given...
         patient = Patient.query.filter_by(
             fname=data["fname"],
             name=data["name"]
         ).one_or_none()
+
         if patient is not None:
             birth_date = patient.birth_date
+
+        # ...otherwise raise error
         else:
             raise Exception("No birth date specified")
     created_at = datetime.now().date()
     base_path = filepath
     document_type = data["type"]
 
+    # select patient by forename, name and birth date
     patient = Patient.query.filter_by(
         fname=data["fname"],
         name=data["name"],
         birth_date=birth_date
     ).one_or_none()
 
+    # If patient doesn't exist, create the patient
     if patient is None:
         patient = Patient(
             fname=data["fname"],
@@ -133,8 +148,10 @@ def save_data(data, filepath):
         db.session.add(patient)
         db.session.flush()
 
+    # Select Contact data by patient id
     contact = ContactData.query.filter_by(p_id=patient.p_id).one_or_none()
 
+    # If data doesn't exist, create data...
     if contact is None:
         contact = ContactData(
             adress=data["adress"],
@@ -142,12 +159,14 @@ def save_data(data, filepath):
             p_id=patient.p_id
         )
         db.session.add(contact)
+    # ...otherwise update the existing data to the new values
     else:
         if data["adress"] != "":
             contact.adress = data["adress"]
         if data["phone"] != "":
             contact.telephone = data["phone"]
 
+    # saving documents by the path to the database
     json_document = Document(
         document_type=document_type,
         path=str(base_path.with_suffix(".json")),
@@ -166,8 +185,10 @@ def save_data(data, filepath):
 
     db.session.add(json_document)
     db.session.add(txt_document)
+    # commiting all changes
     db.session.commit()
 
+# sql-request for selecting patients
 def select_patients():
     patients = db.session.execute(
         select(

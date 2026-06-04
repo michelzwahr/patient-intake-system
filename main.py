@@ -13,14 +13,14 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     }
 }
 
-# Datenbank mit Flask verbinden
+# Connect Database to Flask
 db.init_app(app)
 
-# Tabellen erzeugen
+# Create tables
 with app.app_context():
     db.create_all()
     
-    # Standard-User im sicheren Kontext anlegen
+    # Default Users
     default_users = [
         {"username": "hzwahr", "password": "1234"},
         {"username": "bschulz", "password": "1234"}

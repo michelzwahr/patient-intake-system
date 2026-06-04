@@ -4,15 +4,14 @@ import data_handler as dh
 def create_app():
 
     app = Flask("Patient-Intake-System")
+    app.secret_key = "app-key"
 
+    # Index: Allgemeiner Fragebogen
     @app.route("/")
     def index():
-        return render_template("index.html")
+        return redirect("/allgemeiner_Fragebogen")
 
-    @app.route("/test_formular")
-    def test_form():
-        return render_template("test_formular.html")
-
+    # Route for submitting the form
     @app.route("/submit", methods=["POST"])
     def submit():
 
@@ -30,34 +29,30 @@ def create_app():
     def success():
         return render_template("success.html")
 
-    @app.route("/anamnese")
+    @app.route("/allgemeiner_Fragebogen")
     def anamnese():
         return render_template("Fragebogen_allgemein.html")
     
+    # login route
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
             username = request.form["username"]
             password = request.form["password"]
-#            if username in users and check_password_hash(users[username], password):
-#                session["user"] = username
-#                return redirect("/dashboard")
-            if dh.check_user(username, password):
+            if dh.check_user(username, password): # checking if user exists and if the pwd is correct
                 session["user"] = username
-                print(session)
+                # enter dashboard after succesfully loging in
                 return redirect("/dashboard")
 
         return render_template("login.html")
     
     @app.route("/dashboard")
     def dashboard():
-
+        # checking if current user is logged in
         if "user" not in session:
             return redirect("/login")
         else:
-            username = session["user"]
-
-        return render_template("Dashboard.html")
+            return render_template("Dashboard.html")
     
     @app.route("/logout")
     def logout():
@@ -65,28 +60,31 @@ def create_app():
 
         return redirect("/login")
 
+    # Route for getting patient-data on the dashboard
     @app.route("/patient/<int:patient_id>")
     def get_patient(patient_id):
         if "user" in session:
             return dh.patient_info(patient_id)
     
+    # Route for searching patient by name on the dashboard
     @app.route("/search/<string:patient_name>")
     def search(patient_name):
         if "user" in session:
             return dh.search_user_by_name(patient_name)
 
+    # Route for downloading a file
     @app.route("/download/<path:path>")
     def download(path):
-        if "user" not in session:
+        if "user" not in session: # Is the user logged in?
             return redirect("/login")
         else:
             download = dh.provide_download(path)
             if download[0] == "error":
-                abort(download[1])
+                abort(download[1]) # 403 or 404 (check 'data_handler.provide_download()')
             elif download[0] == "filepath":
                 return send_file(
                     download[1],
                     as_attachment=True
-                )
+                ) # With permission: provide file
 
     return app
