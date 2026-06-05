@@ -110,6 +110,7 @@ def save_files(data):
     return filepath
 
 # Saving data in the database
+# only used for "Fragebogen_allgemein" -> first form every patient needs to fill out
 def save_data(data, filepath):
     # Checking for valid birth date
     try:
@@ -199,23 +200,25 @@ def select_patients():
     ).all()
     return patients
 
-def patient_info(patient_id):
+# provide patient info for the dashboard
+def patient_info(patient_id: int) -> list:
     paths = db.session.execute(
-
         select(Document.path).where(
             Document.p_id == patient_id,
-            Document.document_type == "Fragebogen_allgemein",
             Document.filetype == "json"
-        )
+        ) # find all json documents
 
     ).scalars().all()
 
     data_list = []
 
+    # cycle through all paths which where found
     for path in paths:
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
+            # add parameter filename and filepath,
+            # so the entries at the dasboard can be specified
             data["filename"] = os.path.splitext(os.path.basename(path))[0]
             data["filepath"] = os.path.relpath(path, "storage")
 
@@ -223,22 +226,28 @@ def patient_info(patient_id):
     
     return data_list
 
+# finds file in strorage with given name
 def provide_download(filename):
     STORAGE_DIR = Path("storage").resolve()
     file_path = (STORAGE_DIR / filename).resolve().with_suffix(".txt")
 
+    # prevent downloading other files except those in the right directory
     if not str(file_path).startswith(str(STORAGE_DIR)):
-        return ["error", 403]
+        return ["error", 403] # Error 403: forbidden
 
+    # checks if the given path exists
     if not file_path.exists():
-        return ["error", 404]
+        return ["error", 404] # error 404: not found
     
     else:
         return ["filepath", file_path]
-    
-def create_users(users: list[UserData]) -> None:
+
+# create users from list with username and pwd
+def create_users(users: list[UserData]) -> None: # TypedDict (cf. line 10)
     for user in users:
+        # checking if user is already in database...
         existing_user = User.query.filter_by(username=user["username"]).first()
+        # ...otherwise add user
         if existing_user is None:
             new_user = User(
                 username=user["username"],
@@ -247,33 +256,39 @@ def create_users(users: list[UserData]) -> None:
             db.session.add(new_user)
     db.session.commit()
 
+# validating user data
 def check_user(username: str, password: str) -> bool:
+    # selecting hashed passwords from database
     hashed_password = db.session.execute(
         select(User.password_hash).where(
             User.username == username
         )
     ).scalar_one_or_none()
+
     if hashed_password is None:
         return False
     return check_password_hash(hashed_password, password)
 
+# sql query to search user by name
 def search_user_by_name(name: str) -> json:
     search_result = db.session.execute(
+        # select forename, name and the id
         select(Patient.fname, Patient.name, Patient.p_id).where(
             or_(
-                Patient.name.ilike(f"%{name}%"),
-                Patient.fname.ilike(f"%{name}%")
+                Patient.name.ilike(f"%{name}%"), # cf. sql"WHERE <attribute> LIKE <'%value%'>"
+                Patient.fname.ilike(f"%{name}%") # searching name and forename
             )
         )
-    ).all()
+    ).all() # returns list with all search results
+
     result = []
     for element in search_result:
         result.append(
             {
-                "fname": element[0],
-                "name": element[1],
-                "id": element[2]
+                "fname": element[0], # index 0: forename
+                "name": element[1],  # index 1: name
+                "id": element[2]     # index 2: p_id
             }
         )
     print(result)
-    return json.dumps(result)
+    return json.dumps(result) # return json file
