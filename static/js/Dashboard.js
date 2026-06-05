@@ -199,7 +199,7 @@ formsSelect.addEventListener("change", () => {
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
 
-    if (dataset){
+    if (dataSet){
         switch (dataSet.type){
             case "Fragebogen_allgemein":
                 renderPatientForm(dataSet);
