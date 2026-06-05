@@ -17,7 +17,7 @@ function download_file(){
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
     path = dataSet.filepath;
-    console.log(path);
+    //console.log(path);
     window.location.href = `/download/${path}`;
 }
 
@@ -199,10 +199,11 @@ formsSelect.addEventListener("change", () => {
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
 
-    if (dataSet) {
-        console.log(dataSet.filename);
+    if (dataset){
+        switch (dataSet.type){
+            case "Fragebogen_allgemein":
+                renderPatientForm(dataSet);
+        }
     }
-
-    renderPatientForm(dataSet);
 });
 
