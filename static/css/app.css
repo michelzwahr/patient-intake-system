@@ -136,10 +136,14 @@ summary {
     color: var(--text);
 }
 
-details p,
-details ul {
+details p {
     margin: 0;
     padding: 0 14px 12px;
+}
+
+details ul {
+    margin: 0;
+    padding: 0 14px 12px 32px;
 }
 
 ul {
@@ -187,9 +191,6 @@ p label:has(input[type="radio"]) {
     margin: 16px 0;
 }
 
-/*.section,
-#contraception-list,
-#medication-list,*/
 #acute_symptoms_div,
 #disease_div,
 #gen_op_div,
@@ -264,7 +265,7 @@ body:has(#login_form),
     display: grid;
     grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
     gap: 24px;
-    max-width: 1200px;
+    max-width: 160vh;
     margin-left: 24px;
     margin-right: auto;
     align-items: start;
@@ -291,6 +292,22 @@ body:has(#login_form),
     padding-top: 8px;
     border: 1px solid var(--border);
     border-radius: 14px;
+}
+#search-div {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+#search-div input {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+}
+
+#search-div button {
+    flex-shrink: 0;
+    width: auto;
 }
 
 .dashboard-controls select {
