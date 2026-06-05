@@ -1,6 +1,6 @@
 from app import create_app
 from models import db
-import data_handler as dh
+import modules.user_handler as user
 
 app = create_app()
 
@@ -25,7 +25,7 @@ with app.app_context():
         {"username": "hzwahr", "password": "1234"},
         {"username": "bschulz", "password": "1234"}
     ]
-    dh.create_users(default_users)
+    user.create_users(default_users)
 
 
 if __name__ == "__main__":

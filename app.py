@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, session, abort, send_file
-import data_handler as dh
+import modules.data_handler as dh
+import modules.user_handler as user_handler
+import modules.storage_handler as storage_handler
 
 def create_app():
 
@@ -17,7 +19,7 @@ def create_app():
 
         data = request.json
 
-        filepath = dh.save_files(data)
+        filepath = storage_handler.save_files(data)
         dh.save_data(data, filepath)
 
         return jsonify({
@@ -39,7 +41,7 @@ def create_app():
         if request.method == "POST":
             username = request.form["username"]
             password = request.form["password"]
-            if dh.check_user(username, password): # checking if user exists and if the pwd is correct
+            if user_handler.check_user(username, password): # checking if user exists and if the pwd is correct
                 session["user"] = username
                 # enter dashboard after succesfully loging in
                 return redirect("/dashboard")
@@ -52,7 +54,7 @@ def create_app():
         if "user" not in session:
             return redirect("/login")
         else:
-            return render_template("Dashboard.html")
+            return render_template("Dashboard.html", username=session["user"])
     
     @app.route("/logout")
     def logout():
@@ -70,7 +72,7 @@ def create_app():
     @app.route("/search/<string:patient_name>")
     def search(patient_name):
         if "user" in session:
-            return dh.search_user_by_name(patient_name)
+            return dh.search_patient_by_name(patient_name)
 
     # Route for downloading a file
     @app.route("/download/<path:path>")
@@ -78,7 +80,7 @@ def create_app():
         if "user" not in session: # Is the user logged in?
             return redirect("/login")
         else:
-            download = dh.provide_download(path)
+            download = storage_handler.provide_download(path)
             if download[0] == "error":
                 abort(download[1]) # 403 or 404 (check 'data_handler.provide_download()')
             elif download[0] == "filepath":
