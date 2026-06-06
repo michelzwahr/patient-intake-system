@@ -51,35 +51,34 @@ def create_app():
     @app.route("/dashboard")
     def dashboard():
         # checking if current user is logged in
-        if "user" not in session:
+        if not session.get("user"):
             return redirect("/login")
         else:
             return render_template("Dashboard.html", user=session["user"])
     
     @app.route("/logout")
     def logout():
-        session.pop("user", None)
+        session.clear()
 
         return redirect("/login")
 
     # Route for getting patient-data on the dashboard
     @app.route("/patient/<int:patient_id>")
     def get_patient(patient_id):
-        if "user" in session:
+        if session.get("user"):
             return dh.patient_info(patient_id)
     
     # Route for searching patient by name on the dashboard
     @app.route("/search/<string:patient_name>")
     def search(patient_name):
-        if "user" in session:
+        if session.get("user"):
             return dh.search_patient_by_name(patient_name)
 
     # Route for downloading a file
     @app.route("/download/<path:path>")
     def download(path):
-        if "user" not in session: # Is the user logged in?
-            return redirect("/login")
-        elif session["user"]["role"] == "doctor":
+        user = session.get("user")
+        if user and user.get("role") in ("admin", "doctor"):
             download = storage_handler.provide_download(path)
             if download[0] == "error":
                 abort(download[1]) # 403 or 404 (check 'data_handler.provide_download()')
@@ -90,5 +89,12 @@ def create_app():
                 ) # With permission: provide file
         else:
             return abort(403)
+
+    # Error-Handling
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        # logging error in backend
+        app.logger.error(e)
+        return render_template("error.html")
 
     return app
