@@ -46,3 +46,5 @@ class User(db.Model):
 
     password_hash = db.Column(db.String(255))
 
+    role = db.Column(db.String(128))
+

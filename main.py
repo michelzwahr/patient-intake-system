@@ -22,8 +22,9 @@ with app.app_context():
     
     # Default Users
     default_users = [
-        {"username": "hzwahr", "password": "1234"},
-        {"username": "bschulz", "password": "1234"}
+        {"username": "doctor", "password": "doctor", "role": "doctor"},
+        {"username": "reception", "password": "reception", "role": "reception"},
+        {"username": "admin", "password": "admin", "role": "admin"}
     ]
     user.create_users(default_users)
 

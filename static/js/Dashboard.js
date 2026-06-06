@@ -2,12 +2,17 @@ const patientSelect = document.getElementById("patient-select");
 const formsSelect = document.getElementById("forms");
 const patientInfo = document.getElementById("patient-info");
 
-const patientTemplate = document.getElementById("patient-template");
+const doctorTemplate = document.getElementById("doctor-template");
+const receptionTemplate = document.getElementById("reception-template");
+
 const medicationTemplate = document.getElementById("medication-template");
 const contraceptionTemplate = document.getElementById("contraception-template");
 const selectionTemplate = document.getElementById("selection-template");
 
+const username = document.getElementById("username");
+
 let currentFormsData = [];
+let current_user;
 
 function logout(){
     window.location.href = `/logout`;
@@ -16,8 +21,7 @@ function logout(){
 function download_file(){
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
-    path = dataSet.filepath;
-    //console.log(path);
+    const path = dataSet.filepath;
     window.location.href = `/download/${path}`;
 }
 
@@ -26,7 +30,7 @@ async function search_patient(){
     const response = await fetch(`/search/${patient_str}`);
     const patients = await response.json();
 
-    patientSelect.innerHTML = "<option>Bitte auswählen</option>";
+    patientSelect.innerHTML = "<option value=''>Bitte auswählen</option>";
 
     patients.forEach((result) => {
         const newOption = document.createElement("option");
@@ -53,7 +57,7 @@ function formatConditionalValue(flag, details, yesText = "Ja", noText = "Nein") 
     return noText;
 }
 
-function renderPatientForm(dataSet) {
+function renderDoctorForm(dataSet) {
     patientInfo.style.display = "block";
     patientInfo.innerHTML = "";
 
@@ -61,7 +65,7 @@ function renderPatientForm(dataSet) {
         return;
     }
 
-    const clone = patientTemplate.content.cloneNode(true);
+    const clone = doctorTemplate.content.cloneNode(true);
 
     setTextContent(clone, ".name", `${dataSet.fname} ${dataSet.name}`);
     setTextContent(clone, ".date", dataSet.date);
@@ -115,7 +119,6 @@ function renderPatientForm(dataSet) {
         clone.querySelectorAll(".births").forEach((element) => {
             element.style.display = "none";
         })
-        console.log(clone.querySelectorAll(".births"));
         setTextContent(clone, ".births_nb", "0");
     }
     setTextContent(clone, ".miscarriage", dataSet.miscarriage_details || "Nein");
@@ -169,6 +172,25 @@ function renderPatientForm(dataSet) {
     patientInfo.appendChild(clone);
 }
 
+function renderReceptionForm(dataSet) {
+    patientInfo.style.display = "block";
+    patientInfo.innerHTML = "";
+
+    if (!dataSet) {
+        return;
+    }
+
+    const clone = receptionTemplate.content.cloneNode(true);
+
+    setTextContent(clone, ".name", `${dataSet.fname} ${dataSet.name}`);
+    setTextContent(clone, ".date", dataSet.date);
+    setTextContent(clone, ".phone", dataSet.phone);
+    setTextContent(clone, ".adress", dataSet.adress);
+
+    // CRITICAL FIX: Append the clone to patientInfo!
+    patientInfo.appendChild(clone);
+}
+
 patientSelect.addEventListener("change", async () => {
     const patientId = patientSelect.value;
 
@@ -176,7 +198,7 @@ patientSelect.addEventListener("change", async () => {
     formsSelect.innerHTML = "<option value=''>Bitte auswählen</option>";
     patientInfo.innerHTML = "";
 
-    if (!patientId) {
+    if (!patientId || isNaN(patientId)) {
         return;
     }
 
@@ -202,8 +224,29 @@ formsSelect.addEventListener("change", () => {
     if (dataSet){
         switch (dataSet.type){
             case "Fragebogen_allgemein":
-                renderPatientForm(dataSet);
+                console.log("current_user: ", current_user)
+                console.log("current_user_role: ", current_user.role)
+                switch (current_user.role){
+                    case "doctor":
+                        renderDoctorForm(dataSet);
+                        break;
+                    case "reception":
+                        renderReceptionForm(dataSet);
+                        break;
+                    case "admin":
+                        break;
+                }
+                break;
         }
     }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    let user_raw = document.getElementById("user").innerText.replaceAll("'", '"');
+
+    current_user = JSON.parse(user_raw);
+
+    if (username && current_user) {
+        username.textContent = current_user.username;
+    }
+});

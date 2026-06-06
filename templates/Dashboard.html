@@ -11,7 +11,7 @@
 <body>
     <div class="dashboard-shell">
         <div class="dashboard-main">
-            <h1>Hallo {{ username }}</h1>
+            <h1>Hallo <span id="username"></span></h1>
             <div class="dashboard-actions">
                 <button onclick="logout()">Ausloggen</button>
                 <button onclick="download_file()">Eintrag herunterladen</button>
@@ -37,8 +37,8 @@
     </div>
 
 
-    <template id="patient-template">
-        <p>Patientin: <span class="name">Mia Mustermann</span></p>
+    <template id="doctor-template">
+        <p>Patientin: <span class="name"></span></p>
         <details>
             <summary>Persönliche Daten</summary>
             <p>Geburtsdatum: <span class="date">01.01.2000</span></p>
@@ -96,6 +96,16 @@
         </details>
     </template>
 
+    <template id="reception-template">
+        <p>Patientin: <span class="name"></span></p>
+        <details>
+            <summary>Persönliche Daten</summary>
+            <p>Geburtsdatum: <span class="date">01.01.2000</span></p>
+            <p>Telefon: <span class="phone">123456789</span></p>
+            <p>Adresse: <span class="adress">Musterstraße 1</span></p>
+        </details>
+    </template>
+
     <template id="medication-template">
         <li>Medikament: <span class="med_name"></span> | Dosis: <span class="med_dose"></span> | Seit: <span class="med_since"></span></li>
     </template>
@@ -109,5 +119,7 @@
     </template>
 
     <script src="/static/js/Dashboard.js"></script>
+
+    <span id="user" style="display: none;">{{ user | tojson }}</span>
 </body>
 </html>

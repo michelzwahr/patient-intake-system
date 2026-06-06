@@ -42,7 +42,7 @@ def create_app():
             username = request.form["username"]
             password = request.form["password"]
             if user_handler.check_user(username, password): # checking if user exists and if the pwd is correct
-                session["user"] = username
+                session["user"] = user_handler.get_user(username=username)
                 # enter dashboard after succesfully loging in
                 return redirect("/dashboard")
 
@@ -54,7 +54,7 @@ def create_app():
         if "user" not in session:
             return redirect("/login")
         else:
-            return render_template("Dashboard.html", username=session["user"])
+            return render_template("Dashboard.html", user=session["user"])
     
     @app.route("/logout")
     def logout():
