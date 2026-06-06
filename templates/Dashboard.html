@@ -14,17 +14,19 @@
             <h1>Hallo <span id="username"></span></h1>
             <div class="dashboard-actions">
                 <button onclick="logout()">Ausloggen</button>
-                <button onclick="download_file()">Eintrag herunterladen</button>
+                <button onclick="download_file()" id="download-button">Eintrag herunterladen</button>
             </div>
 
             <div class="dashboard-controls">
                 <label for="patient-select">Patientin:</label>
                 <div id="search-div">
-                    <input type="text" name="patient-name" id="patient-name">
+                    <input type="text" name="patient-name" id="patient-name" placeholder="Name">
                     <button id="search-patient" onclick="search_patient()">Suchen</button>
                 </div>
 
-                <select name="patient-select" id="patient-select"></select>
+                <select name="patient-select" id="patient-select">
+                    <option value="">Bitte auswählen</option>
+                </select>
 
                 <label for="forms">Eintrag:</label>
                 <select name="Formulare" id="forms">

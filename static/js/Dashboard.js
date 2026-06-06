@@ -11,6 +11,8 @@ const selectionTemplate = document.getElementById("selection-template");
 
 const username = document.getElementById("username");
 
+
+const downloadButton = document.getElementById("download-button");
 let currentFormsData = [];
 let current_user;
 
@@ -19,10 +21,15 @@ function logout(){
 }
 
 function download_file(){
+    if (current_user.role == "doctor" || current_user.role == "admin"){
     const selectedForm = formsSelect.value;
     const dataSet = currentFormsData[selectedForm];
     const path = dataSet.filepath;
     window.location.href = `/download/${path}`;
+    }
+    else{
+        window.alert("Sie haben keine berechtigung, einen Eintrag herunterzuladen!")
+    }
 }
 
 async function search_patient(){
@@ -248,5 +255,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (username && current_user) {
         username.textContent = current_user.username;
+    }
+    switch (current_user.role){
+        case "doctor" || "admin":
+            downloadButton.style.display = "block";
+        default:
+            downloadButton.style.display = "none";
     }
 });
