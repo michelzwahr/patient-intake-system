@@ -14,7 +14,7 @@
             <h1>Hallo <span id="username"></span></h1>
             <div class="dashboard-actions">
                 <button onclick="logout()">Ausloggen</button>
-                <button onclick="download_file()" id="download-button">Eintrag herunterladen</button>
+                <button onclick="download_file()" id="download-button" style="display: none;">Eintrag herunterladen</button>
             </div>
 
             <div class="dashboard-controls">
@@ -122,6 +122,6 @@
 
     <script src="/static/js/Dashboard.js"></script>
 
-    <span id="user" style="display: none;">{{ user | tojson }}</span>
+    <span id="user" style="display: none;">{{ user }}</span>
 </body>
 </html>

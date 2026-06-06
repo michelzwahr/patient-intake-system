@@ -28,7 +28,7 @@ function download_file(){
     window.location.href = `/download/${path}`;
     }
     else{
-        window.alert("Sie haben keine berechtigung, einen Eintrag herunterzuladen!")
+        window.alert("Sie haben keine Berechtigung, einen Eintrag herunterzuladen!")
     }
 }
 
@@ -231,8 +231,6 @@ formsSelect.addEventListener("change", () => {
     if (dataSet){
         switch (dataSet.type){
             case "Fragebogen_allgemein":
-                console.log("current_user: ", current_user)
-                console.log("current_user_role: ", current_user.role)
                 switch (current_user.role){
                     case "doctor":
                         renderDoctorForm(dataSet);
@@ -256,10 +254,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (username && current_user) {
         username.textContent = current_user.username;
     }
-    switch (current_user.role){
-        case "doctor" || "admin":
-            downloadButton.style.display = "block";
-        default:
-            downloadButton.style.display = "none";
-    }
+
+    download_button();
 });
+
+function download_button(){
+    const downloadButton = document.getElementById("download-button");
+    if (!downloadButton || !current_user) return;
+    
+    switch (current_user.role){
+        case "reception":
+            downloadButton.style.display = "none";
+            break;
+        case "doctor":
+            downloadButton.style.display = "block";
+            break;
+        case "admin":
+            downloadButton.style.display = "block";
+            break;
+    }
+}

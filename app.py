@@ -79,7 +79,7 @@ def create_app():
     def download(path):
         if "user" not in session: # Is the user logged in?
             return redirect("/login")
-        else:
+        elif session["user"]["role"] == "doctor":
             download = storage_handler.provide_download(path)
             if download[0] == "error":
                 abort(download[1]) # 403 or 404 (check 'data_handler.provide_download()')
@@ -88,5 +88,7 @@ def create_app():
                     download[1],
                     as_attachment=True
                 ) # With permission: provide file
+        else:
+            return abort(403)
 
     return app
