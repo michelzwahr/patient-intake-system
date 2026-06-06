@@ -4,10 +4,10 @@ import json
 
 # Saving data in the folder 'storage'
 def save_files(data):
-    BASE_DIR = Path(__file__).resolve().parent
+    STORAGE_DIR = Path("storage").resolve()
     # filename-format: <Document_type>_<Sirname>_<date: %d-%m-%Y--%H-%M-%S>
     filename = f"{data['type']}_{data['name']}_{datetime.now().strftime('%d-%m-%Y--%H-%M-%S')}"
-    folder = BASE_DIR / "storage" / data["type"]
+    folder = STORAGE_DIR / data["type"]
     folder.mkdir(parents=True, exist_ok=True) # Preventing error if folder is not available
     filepath = folder / filename
 
