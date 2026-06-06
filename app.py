@@ -45,7 +45,8 @@ def create_app():
                 session["user"] = user_handler.get_user(username=username)
                 # enter dashboard after succesfully loging in
                 return redirect("/dashboard")
-
+        user = session.get("user")
+        print(user)
         return render_template("login.html")
     
     @app.route("/dashboard")
@@ -59,6 +60,7 @@ def create_app():
     @app.route("/logout")
     def logout():
         session.clear()
+        print(session.get("user"))
 
         return redirect("/login")
 
@@ -78,6 +80,7 @@ def create_app():
     @app.route("/download/<path:path>")
     def download(path):
         user = session.get("user")
+        print(user)
         if user and user.get("role") in ("admin", "doctor"):
             download = storage_handler.provide_download(path)
             if download[0] == "error":
@@ -95,6 +98,6 @@ def create_app():
     def handle_exception(e):
         # logging error in backend
         app.logger.error(e)
-        return render_template("error.html")
+        return render_template("error.html", error=e)
 
     return app

@@ -239,6 +239,7 @@ formsSelect.addEventListener("change", () => {
                         renderReceptionForm(dataSet);
                         break;
                     case "admin":
+                        renderDoctorForm(dataSet);
                         break;
                 }
                 break;
