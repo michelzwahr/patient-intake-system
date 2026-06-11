@@ -1,3 +1,5 @@
+
+// HTML objects
 const patientSelect = document.getElementById("patient-select");
 const formsSelect = document.getElementById("forms");
 const patientInfo = document.getElementById("patient-info");
@@ -13,6 +15,8 @@ const username = document.getElementById("username");
 
 
 const downloadButton = document.getElementById("download-button");
+
+// variables for selection of users and user-forms
 let currentFormsData = [];
 let current_user;
 
@@ -21,25 +25,31 @@ function logout(){
 }
 
 function download_file(){
+    // only doctor and admin role are allowed to request downloading files
     if (current_user.role == "doctor" || current_user.role == "admin"){
-    const selectedForm = formsSelect.value;
-    const dataSet = currentFormsData[selectedForm];
-    const path = dataSet.filepath;
-    window.location.href = `/download/${path}`;
+        const selectedForm = formsSelect.value;
+        const dataSet = currentFormsData[selectedForm]; // select currently selected form
+        const path = dataSet.filepath;
+        window.location.href = `/download/${path}`; // route for download (cf. app.py / download())
     }
     else{
         window.alert("Sie haben keine Berechtigung, einen Eintrag herunterzuladen!")
     }
 }
 
+// search patient by their name
 async function search_patient(){
     const patient_str = document.getElementById("patient-name").value;
-    const response = await fetch(`/search/${patient_str}`);
-    const patients = await response.json();
+    
+    const response = await fetch(`/search/${patient_str}`); // sending request to server
+    const patients = await response.json(); // format received data to json
 
+    // create default option
     patientSelect.innerHTML = "<option value=''>Bitte auswählen</option>";
 
+    // loop through every result
     patients.forEach((result) => {
+        // append new option with patient_id and fname+name
         const newOption = document.createElement("option");
         newOption.value = result.id;
         newOption.textContent = `${result.fname} ${result.name}`;
@@ -47,23 +57,25 @@ async function search_patient(){
     })
 }
 
+// helper function to simplify the value change by querySelector 
 function setTextContent(container, selector, value) {
     const element = container.querySelector(selector);
 
     if (element) {
-        element.textContent = value ?? "";
+        element.textContent = value ?? ""; // if textContent is null, use an empty string
     }
 }
 
-
+// helper function for showing details of an question only if needed, otherwise return yes or no
 function formatConditionalValue(flag, details, yesText = "Ja", noText = "Nein") {
     if (flag === "ja") {
-        return details || yesText;
+        return details || yesText; // if details is empty, just return yes, not an empty string
     }
 
     return noText;
 }
 
+// main function to show all information for role: doctor
 function renderDoctorForm(dataSet) {
     patientInfo.style.display = "block";
     patientInfo.innerHTML = "";

@@ -3,14 +3,10 @@ from typing import TypedDict
 from models import db, Patient, ContactData, Document, User
 from sqlalchemy import select
 
-# TypedDict for user data to prevent incorrect formatting
-class UserData(TypedDict):
-    username: str
-    password: str
-    role: str
 
-# create users from list with username and pwd
-def create_users(users: list[UserData]) -> None: # TypedDict (cf. line 6)
+
+# create users from list with username, pwd and role
+def create_users(users: list) -> None:
     for user in users:
         # checking if user is already in database...
         existing_user = User.query.filter_by(username=user["username"]).first()
