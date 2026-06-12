@@ -69,7 +69,7 @@ function setTextContent(container, selector, value) {
 // helper function for showing details of an question only if needed, otherwise return yes or no
 function formatConditionalValue(flag, details, yesText = "Ja", noText = "Nein") {
     if (flag === "ja") {
-        return details || yesText; // if details is empty, just return yes, not an empty string
+        return details || yesText; // if details is empty, just return yes instead of an empty string
     }
 
     return noText;
@@ -77,21 +77,24 @@ function formatConditionalValue(flag, details, yesText = "Ja", noText = "Nein") 
 
 // main function to show all information for role: doctor
 function renderDoctorForm(dataSet) {
-    patientInfo.style.display = "block";
-    patientInfo.innerHTML = "";
+    patientInfo.style.display = "block"; // make div visible
+    patientInfo.innerHTML = ""; // delete html from older form
 
     if (!dataSet) {
         return;
     }
 
+    // create a new clone of the doctorTemplate
     const clone = doctorTemplate.content.cloneNode(true);
 
+    // basic information
     setTextContent(clone, ".name", `${dataSet.fname} ${dataSet.name}`);
     setTextContent(clone, ".date", dataSet.date);
     setTextContent(clone, ".phone", dataSet.phone);
     setTextContent(clone, ".adress", dataSet.adress);
     setTextContent(clone, ".first_period", dataSet.first_period);
     setTextContent(clone, ".last_period", dataSet.last_period);
+    // if period is regular, set clone .period "regelmaessig", else set it to the details
     setTextContent(
         clone,
         ".period",
@@ -100,6 +103,7 @@ function renderDoctorForm(dataSet) {
     setTextContent(
         clone,
         ".acute_symptoms",
+        // set "Nein" if no acute symptoms exist, else set the details
         formatConditionalValue(dataSet.acute_symptoms, dataSet.acute_symptoms_details)
     );
     setTextContent(
@@ -117,6 +121,7 @@ function renderDoctorForm(dataSet) {
         ".gyn_op",
         formatConditionalValue(dataSet.gyn_op, dataSet.gyn_op_details)
     );
+    // if there are births set the details...
     if (dataSet.births == "ja"){
         setTextContent(
             clone,
@@ -134,6 +139,7 @@ function renderDoctorForm(dataSet) {
             dataSet.births_complications || "Nein"
         );
     }
+    // ...otherwise show no information except te number: 0
     else{
         clone.querySelectorAll(".births").forEach((element) => {
             element.style.display = "none";
@@ -166,7 +172,9 @@ function renderDoctorForm(dataSet) {
         formatConditionalValue(dataSet.personal_matter, dataSet.personal_matter_details)
     );
 
+    // add element to contraception list for each contraception entry
     const contraceptionList = clone.querySelector(".contraception-list");
+    // use an empty list to provide errors if no details are given
     (dataSet.contraception || []).forEach((method) => {
         const contraceptionClone = contraceptionTemplate.content.cloneNode(true);
 
@@ -177,6 +185,7 @@ function renderDoctorForm(dataSet) {
         contraceptionList.appendChild(contraceptionClone);
     });
 
+    // add element to medications list for each used medication
     const medicationList = clone.querySelector(".medication-list");
     (dataSet.medications || []).forEach((medication) => {
         const medicationClone = medicationTemplate.content.cloneNode(true);
@@ -191,6 +200,7 @@ function renderDoctorForm(dataSet) {
     patientInfo.appendChild(clone);
 }
 
+// the medical receptionists aren't allowed to see all information, only the general info
 function renderReceptionForm(dataSet) {
     patientInfo.style.display = "block";
     patientInfo.innerHTML = "";
@@ -206,10 +216,10 @@ function renderReceptionForm(dataSet) {
     setTextContent(clone, ".phone", dataSet.phone);
     setTextContent(clone, ".adress", dataSet.adress);
 
-    // CRITICAL FIX: Append the clone to patientInfo!
     patientInfo.appendChild(clone);
 }
 
+// when the patient-select is changed
 patientSelect.addEventListener("change", async () => {
     const patientId = patientSelect.value;
 
